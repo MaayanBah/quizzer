@@ -13,6 +13,7 @@ from .serializers import (
     QuizUserSerializer,
     CategorySerializer,
     QuizSerializer,
+    UpdateQuizSerializer,
     CreateQuizSerializer,
     QuestionSerializer,
     AnswerSerializer,
@@ -55,12 +56,25 @@ class CategoryViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
+class QuestionViewSet(ModelViewSet):
+    serializer_class = QuestionSerializer
+
+    def get_queryset(self):
+        return Question.objects.filter(quiz_id=self.kwargs["quiz_pk"])
+
+    def get_serializer_context(self):
+        return {"quiz_id": self.kwargs["quiz_pk"]}
+
+
 class QuizViewSet(ModelViewSet):
     queryset = Quiz.objects.all()
+    http_method_names = ["get", "post", "patch", "delete"]
 
     def get_serializer_class(self):
         if self.request.method == "POST":
             return CreateQuizSerializer
+        elif self.request.method == "PATCH":
+            return UpdateQuizSerializer
         return QuizSerializer
 
     def create(self, request, *args, **kwargs):
