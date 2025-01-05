@@ -1,5 +1,12 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import (
+    IsAdminUser,
+    IsAuthenticated,
+)
 from quiz.permissions import IsAdminOrReadOnly
 from .models import QuizUser, Category, Quiz, QuizResult, Question, Answer
 from .serializers import (
@@ -10,13 +17,6 @@ from .serializers import (
     QuestionSerializer,
     AnswerSerializer,
 )
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import (
-    IsAdminUser,
-    IsAuthenticated,
-)
-from rest_framework import status
 
 
 class QuizUserViewSet(ModelViewSet):
@@ -35,6 +35,24 @@ class QuizUserViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAdminOrReadOnly]
+    search_fields = ["name"]
+    lookup_field = "slug"
+
+    def destroy(self, request, *args, **kwargs):
+        if Quiz.objects.filter(category_id=kwargs["pk"]):
+            return Response(
+                {
+                    "error": "Category cannot be deleted because it includes one or more quizzes."
+                },
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )
+        return super().destroy(request, *args, **kwargs)
 
 
 class QuizViewSet(ModelViewSet):
@@ -60,4 +78,4 @@ class QuizViewSet(ModelViewSet):
         serializer = QuizSerializer(quiz)
         return Response(serializer.data)
 
-    # todo add permissions to delete only to the creator
+    # todo add permissions to delete only to the creator or the admin
