@@ -11,4 +11,9 @@ router.register("quiz", views.QuizViewSet)
 quiz_router = routers.NestedDefaultRouter(router, "quiz", lookup="quiz")
 quiz_router.register("questions", views.QuestionViewSet, basename="quiz-questions")
 
-urlpatterns = router.urls + quiz_router.urls
+question_router = routers.NestedDefaultRouter(
+    quiz_router, "questions", lookup="question"
+)
+question_router.register("answers", views.AnswerViewSet, basename="question-answers")
+
+urlpatterns = router.urls + quiz_router.urls + question_router.urls

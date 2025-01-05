@@ -16,6 +16,7 @@ from .serializers import (
     UpdateQuizSerializer,
     CreateQuizSerializer,
     QuestionSerializer,
+    UpdateQuestionSerializer,
     AnswerSerializer,
 )
 
@@ -56,14 +57,31 @@ class CategoryViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
+class AnswerViewSet(ModelViewSet):
+    serializer_class = AnswerSerializer
+
+    def get_queryset(self):
+        return Answer.objects.filter(question_id=self.kwargs["question_pk"])
+
+    def get_serializer_context(self):
+        return {"question_id": self.kwargs["question_pk"]}
+
+
 class QuestionViewSet(ModelViewSet):
-    serializer_class = QuestionSerializer
+    http_method_names = ["get", "post", "patch", "delete"]
 
     def get_queryset(self):
         return Question.objects.filter(quiz_id=self.kwargs["quiz_pk"])
 
     def get_serializer_context(self):
         return {"quiz_id": self.kwargs["quiz_pk"]}
+
+    def get_serializer_class(self):
+        # if self.request.method == "POST":
+        #     return QuestionSerializer
+        if self.request.method == "PATCH":
+            return UpdateQuestionSerializer
+        return QuestionSerializer
 
 
 class QuizViewSet(ModelViewSet):
