@@ -6,9 +6,10 @@ name = "pypi"
 [packages]
 mysqlclient = "*"
 drf-nested-routers = "*"
-djangorestframework = "*"
 djoser = "*"
 djangorestframework-simplejwt = "*"
+django-filter = "*"
+djangorestframework = "*"
 
 [dev-packages]
 
