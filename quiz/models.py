@@ -1,10 +1,9 @@
 from django.db import models
 from django.conf import settings
-from core.models import User
 from django.utils.text import slugify
 
 
-class QuizUser(models.Model):
+class QuizzerUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     birth_date = models.DateField(null=True, blank=True)
@@ -30,14 +29,14 @@ class Category(models.Model):
         ordering = ["name"]
 
 
-class Quiz(models.Model):
+class Quizzes(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     category = models.ForeignKey(
         Category, related_name="quizzes", on_delete=models.CASCADE
     )
     quiz_user = models.ForeignKey(
-        QuizUser, related_name="quizzes", on_delete=models.CASCADE
+        QuizzerUser, related_name="quizzes", on_delete=models.CASCADE
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -53,7 +52,7 @@ class QuizResult(models.Model):
         settings.AUTH_USER_MODEL, related_name="quiz_results", on_delete=models.CASCADE
     )
     quiz = models.ForeignKey(
-        Quiz, related_name="quiz_results", on_delete=models.CASCADE
+        Quizzes, related_name="quiz_results", on_delete=models.CASCADE
     )
     score = models.IntegerField()
     completed_at = models.DateTimeField(auto_now_add=True)
@@ -62,7 +61,9 @@ class QuizResult(models.Model):
 class Question(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
-    quiz = models.ForeignKey(Quiz, related_name="questions", on_delete=models.CASCADE)
+    quiz = models.ForeignKey(
+        Quizzes, related_name="questions", on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
         return self.title

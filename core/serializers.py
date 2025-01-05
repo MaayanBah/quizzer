@@ -1,4 +1,4 @@
-from quiz.models import QuizUser
+from quiz.models import QuizzerUser
 from djoser.serializers import (
     UserSerializer as BaseUserSerializer,
     UserCreateSerializer as BaseUserCreateSerializer,

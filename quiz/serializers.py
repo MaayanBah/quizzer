@@ -1,14 +1,14 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import QuizUser, Category, Quiz, QuizResult, Question, Answer
+from .models import QuizzerUser, Category, Quizzes, QuizResult, Question, Answer
 from core.models import User
 
 
-class QuizUserSerializer(serializers.ModelSerializer):
+class QuizzerUserSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
-        model = QuizUser
+        model = QuizzerUser
         fields = ["id", "user_username", "birth_date"]
 
 
@@ -50,29 +50,29 @@ class UpdateQuestionSerializer(serializers.ModelSerializer):
         return Question.objects.create(quiz_id=quiz_id, **validated_data)
 
 
-class QuizSerializer(serializers.ModelSerializer):
+class QuizzesSerializer(serializers.ModelSerializer):
     questions = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Quiz
+        model = Quizzes
         fields = ["id", "title", "description", "category", "quiz_user", "questions"]
 
 
 class UpdateQuizSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Quiz
+        model = Quizzes
         fields = ["title", "description", "category"]
 
 
 class CreateQuizSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Quiz
+        model = Quizzes
         fields = ["id", "title", "description", "category"]
 
     def save(self, **kwargs):
         with transaction.atomic():
-            quiz_user = QuizUser.objects.get(user_id=self.context["user_id"])
-            quiz = Quiz.objects.create(
+            quiz_user = QuizzerUser.objects.get(user_id=self.context["user_id"])
+            quiz = Quizzes.objects.create(
                 quiz_user=quiz_user,
                 title=self.validated_data["title"],
                 description=self.validated_data.get("description", ""),

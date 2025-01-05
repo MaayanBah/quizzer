@@ -7,12 +7,12 @@ from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticated,
 )
-from quiz.permissions import IsAdminOrReadOnly
-from .models import QuizUser, Category, Quiz, QuizResult, Question, Answer
+from quiz.permissions import IsAdminOrReadOnly, IsAdminOrQuizCreator
+from .models import QuizzerUser, Category, Quizzes, QuizResult, Question, Answer
 from .serializers import (
-    QuizUserSerializer,
+    QuizzerUserSerializer,
     CategorySerializer,
-    QuizSerializer,
+    QuizzesSerializer,
     UpdateQuizSerializer,
     CreateQuizSerializer,
     QuestionSerializer,
@@ -21,19 +21,18 @@ from .serializers import (
 )
 
 
-class QuizUserViewSet(ModelViewSet):
-    queryset = QuizUser.objects.all()
-    serializer_class = QuizUserSerializer
-    permission_classes = [IsAdminUser]
+class QuizzerUserViewSet(ModelViewSet):
+    queryset = QuizzerUser.objects.all()
+    serializer_class = QuizzerUserSerializer
 
     @action(detail=False, methods=["GET", "PUT"], permission_classes=[IsAuthenticated])
     def me(self, request):
-        quiz_user = QuizUser.objects.get(user_id=request.user.id)
+        quiz_user = QuizzerUser.objects.get(user_id=request.user.id)
         if request.method == "GET":
-            serializer = QuizUserSerializer(quiz_user)
+            serializer = QuizzerUserSerializer(quiz_user)
             return Response(serializer.data)
         elif request.method == "PUT":
-            serializer = QuizUserSerializer(quiz_user, data=request.data)
+            serializer = QuizzerUserSerializer(quiz_user, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
@@ -47,7 +46,7 @@ class CategoryViewSet(ModelViewSet):
     lookup_field = "slug"
 
     def destroy(self, request, *args, **kwargs):
-        if Quiz.objects.filter(category_id=kwargs["pk"]):
+        if Quizzes.objects.filter(category_id=kwargs["pk"]):
             return Response(
                 {
                     "error": "Category cannot be deleted because it includes one or more quizzes."
@@ -71,10 +70,10 @@ class QuestionViewSet(ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
 
     def get_queryset(self):
-        return Question.objects.filter(quiz_id=self.kwargs["quiz_pk"])
+        return Question.objects.filter(quiz_id=self.kwargs["quizzes_pk"])
 
     def get_serializer_context(self):
-        return {"quiz_id": self.kwargs["quiz_pk"]}
+        return {"quiz_id": self.kwargs["quizzes_pk"]}
 
     def get_serializer_class(self):
         # if self.request.method == "POST":
@@ -84,16 +83,17 @@ class QuestionViewSet(ModelViewSet):
         return QuestionSerializer
 
 
-class QuizViewSet(ModelViewSet):
-    queryset = Quiz.objects.all()
+class QuizzesViewSet(ModelViewSet):
+    queryset = Quizzes.objects.all()
     http_method_names = ["get", "post", "patch", "delete"]
+    permission_classes = [IsAdminOrQuizCreator]
 
     def get_serializer_class(self):
         if self.request.method == "POST":
             return CreateQuizSerializer
         elif self.request.method == "PATCH":
             return UpdateQuizSerializer
-        return QuizSerializer
+        return QuizzesSerializer
 
     def create(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -107,7 +107,5 @@ class QuizViewSet(ModelViewSet):
         print("2views: ", self.request.user.id)
         serializer.is_valid(raise_exception=True)
         quiz = serializer.save()
-        serializer = QuizSerializer(quiz)
+        serializer = QuizzesSerializer(quiz)
         return Response(serializer.data)
-
-    # todo add permissions to delete only to the creator or the admin
