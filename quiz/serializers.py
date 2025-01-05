@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from .models import QuizUser, Category, Quiz, QuizResult, Question, Answer
 from core.models import User
@@ -29,17 +30,15 @@ class CreateQuizSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "description", "category"]
 
     def save(self, **kwargs):
-        print("1: serializers")
-        # with transaction.atomic():
-        quiz_user = QuizUser.objects.get(user_id=self.context["user_id"])
-        print(quiz_user)
-        quiz = Quiz.objects.create(
-            quiz_user=quiz_user,
-            title=self.validated_data["title"],
-            description=self.validated_data.get("description", ""),
-            category=self.validated_data["category"],
-        )
-        return quiz
+        with transaction.atomic():
+            quiz_user = QuizUser.objects.get(user_id=self.context["user_id"])
+            quiz = Quiz.objects.create(
+                quiz_user=quiz_user,
+                title=self.validated_data["title"],
+                description=self.validated_data.get("description", ""),
+                category=self.validated_data["category"],
+            )
+            return quiz
 
 
 class QuestionSerializer(serializers.ModelSerializer):
