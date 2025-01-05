@@ -18,10 +18,28 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "slug"]
 
 
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ["id", "title", "text"]
+
+    def create(self, validated_data):
+        quiz_id = self.context["quiz_id"]
+        return Question.objects.create(quiz_id=quiz_id, **validated_data)
+
+
 class QuizSerializer(serializers.ModelSerializer):
+    questions = QuestionSerializer(many=True, read_only=True)
+
     class Meta:
         model = Quiz
-        fields = ["id", "title", "description", "category", "quiz_user"]
+        fields = ["id", "title", "description", "category", "quiz_user", "questions"]
+
+
+class UpdateQuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = ["title", "description", "category"]
 
 
 class CreateQuizSerializer(serializers.ModelSerializer):
@@ -39,13 +57,6 @@ class CreateQuizSerializer(serializers.ModelSerializer):
                 category=self.validated_data["category"],
             )
             return quiz
-
-
-class QuestionSerializer(serializers.ModelSerializer):
-    # todo read quiz__title from view
-    class Meta:
-        model = Question
-        fields = ["id", "title", "text", "quiz__title"]
 
 
 class AnswerSerializer(serializers.ModelSerializer):
