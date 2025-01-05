@@ -3,13 +3,13 @@ from . import views
 
 router = routers.DefaultRouter()
 
-router.register("quiz_users", views.QuizUserViewSet)
+router.register("users", views.QuizzerUserViewSet)
 router.register("categories", views.CategoryViewSet)
-router.register("quiz", views.QuizViewSet)
+router.register("quizzes", views.QuizzesViewSet)
 
 
-quiz_router = routers.NestedDefaultRouter(router, "quiz", lookup="quiz")
-quiz_router.register("questions", views.QuestionViewSet, basename="quiz-questions")
+quiz_router = routers.NestedDefaultRouter(router, "quizzes", lookup="quizzes")
+quiz_router.register("questions", views.QuestionViewSet, basename="quizzes-questions")
 
 question_router = routers.NestedDefaultRouter(
     quiz_router, "questions", lookup="question"
