@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
-
+from quiz.permissions import IsAdminOrReadOnly
 from .models import QuizUser, Category, Quiz, QuizResult, Question, Answer
 from .serializers import (
     QuizUserSerializer,
     CategorySerializer,
     QuizSerializer,
+    CreateQuizSerializer,
     QuestionSerializer,
     AnswerSerializer,
 )
@@ -15,6 +16,7 @@ from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticated,
 )
+from rest_framework import status
 
 
 class QuizUserViewSet(ModelViewSet):
@@ -33,3 +35,29 @@ class QuizUserViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+
+class QuizViewSet(ModelViewSet):
+    queryset = Quiz.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CreateQuizSerializer
+        return QuizSerializer
+
+    def create(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response(
+                {"error": "User must be authenticated to create a quiz."},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )
+        serializer = CreateQuizSerializer(
+            data=request.data, context={"user_id": self.request.user.id}
+        )
+        print("2views: ", self.request.user.id)
+        serializer.is_valid(raise_exception=True)
+        quiz = serializer.save()
+        serializer = QuizSerializer(quiz)
+        return Response(serializer.data)
+
+    # todo add permissions to delete only to the creator

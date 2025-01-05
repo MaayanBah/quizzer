@@ -18,12 +18,28 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class QuizSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
-    quiz_user = QuizUserSerializer()
-
     class Meta:
         model = Quiz
         fields = ["id", "title", "description", "category", "quiz_user"]
+
+
+class CreateQuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = ["id", "title", "description", "category"]
+
+    def save(self, **kwargs):
+        print("1: serializers")
+        # with transaction.atomic():
+        quiz_user = QuizUser.objects.get(user_id=self.context["user_id"])
+        print(quiz_user)
+        quiz = Quiz.objects.create(
+            quiz_user=quiz_user,
+            title=self.validated_data["title"],
+            description=self.validated_data.get("description", ""),
+            category=self.validated_data["category"],
+        )
+        return quiz
 
 
 class QuestionSerializer(serializers.ModelSerializer):
