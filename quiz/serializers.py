@@ -12,6 +12,12 @@ class QuizzerUserSerializer(serializers.ModelSerializer):
         fields = ["id", "user_username", "birth_date"]
 
 
+class UpdateQuizzerUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizzerUser
+        fields = ["birth_date"]
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
