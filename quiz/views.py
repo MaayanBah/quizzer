@@ -4,13 +4,17 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import (
-    IsAdminUser,
     IsAuthenticated,
 )
-from quiz.permissions import IsAdminOrReadOnly, IsAdminOrQuizCreator
+from quiz.permissions import (
+    IsAdminOrReadOnly,
+    IsAdminOrQuizCreator,
+    IsAdminOrMeOrReadOnly,
+)
 from .models import QuizzerUser, Category, Quizzes, QuizResult, Question, Answer
 from .serializers import (
     QuizzerUserSerializer,
+    UpdateQuizzerUserSerializer,
     CategorySerializer,
     QuizzesSerializer,
     UpdateQuizSerializer,
@@ -23,7 +27,7 @@ from .serializers import (
 
 class QuizzerUserViewSet(ModelViewSet):
     queryset = QuizzerUser.objects.all()
-    serializer_class = QuizzerUserSerializer
+    permission_classes = [IsAdminOrMeOrReadOnly]
 
     @action(detail=False, methods=["GET", "PUT"], permission_classes=[IsAuthenticated])
     def me(self, request):
@@ -36,6 +40,11 @@ class QuizzerUserViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+    def get_serializer_class(self):
+        if self.request.method in ["PATCH", "POST", "PUT"]:
+            return UpdateQuizzerUserSerializer
+        return QuizzerUserSerializer
 
 
 class CategoryViewSet(ModelViewSet):
