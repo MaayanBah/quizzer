@@ -66,11 +66,45 @@ class AnswerViewSet(ModelViewSet):
         return {"question_id": self.kwargs["question_pk"]}
 
 
+class UserAnswerViewSet(ModelViewSet):
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        quizzer_user = QuizzerUser.objects.get(user=self.request.user)
+        return Answer.objects.filter(
+            question__quiz__quiz_user=quizzer_user,
+            question_id=self.kwargs["question_pk"],
+        )
+
+    def get_serializer_context(self):
+        return {"question_id": self.kwargs["question_pk"]}
+
+
 class QuestionViewSet(ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
 
     def get_queryset(self):
         return Question.objects.filter(quiz_id=self.kwargs["quizzes_pk"])
+
+    def get_serializer_context(self):
+        return {"quiz_id": self.kwargs["quizzes_pk"]}
+
+    def get_serializer_class(self):
+        if self.request.method in ["PATCH", "POST"]:
+            return UpdateQuestionSerializer
+        return QuestionSerializer
+
+
+class UserQuestionViewSet(ModelViewSet):
+    http_method_names = ["get", "post", "patch", "delete"]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        quizzer_user = QuizzerUser.objects.get(user=self.request.user)
+        return Question.objects.filter(
+            quiz__quiz_user=quizzer_user, quiz_id=self.kwargs["quizzes_pk"]
+        )
 
     def get_serializer_context(self):
         return {"quiz_id": self.kwargs["quizzes_pk"]}
@@ -106,3 +140,12 @@ class QuizzesViewSet(ModelViewSet):
         quiz = serializer.save()
         serializer = QuizzesSerializer(quiz)
         return Response(serializer.data)
+
+
+class UserQuizzesViewSet(ModelViewSet):
+    serializer_class = QuizzesSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        quizzer_user = QuizzerUser.objects.get(user=self.request.user)
+        return Quizzes.objects.filter(quiz_user_id=quizzer_user.id)
