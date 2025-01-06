@@ -76,9 +76,7 @@ class QuestionViewSet(ModelViewSet):
         return {"quiz_id": self.kwargs["quizzes_pk"]}
 
     def get_serializer_class(self):
-        # if self.request.method == "POST":
-        #     return QuestionSerializer
-        if self.request.method == "PATCH":
+        if self.request.method in ["PATCH", "POST"]:
             return UpdateQuestionSerializer
         return QuestionSerializer
 
@@ -104,7 +102,6 @@ class QuizzesViewSet(ModelViewSet):
         serializer = CreateQuizSerializer(
             data=request.data, context={"user_id": self.request.user.id}
         )
-        print("2views: ", self.request.user.id)
         serializer.is_valid(raise_exception=True)
         quiz = serializer.save()
         serializer = QuizzesSerializer(quiz)
