@@ -7,7 +7,7 @@ router.register("users", views.QuizzerUserViewSet)
 router.register("categories", views.CategoryViewSet)
 router.register("quizzes", views.UserQuizzesViewSet, basename="quizzes")
 
-users_router = routers.NestedDefaultRouter(router, "users", lookup="users")
+users_router = routers.NestedDefaultRouter(router, "users", lookup="user")
 users_router.register("quizzes", views.QuizzesViewSet, basename="quizzes")
 
 user_quizzes_router = routers.NestedDefaultRouter(
