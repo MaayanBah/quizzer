@@ -32,9 +32,6 @@ class IsAdminOrMeOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        # if request.method == "POST":
-        #     print(request.user)
-        #     print(bool(request.user and request.user.is_authenticated))
         return bool(request.user and request.user.is_authenticated)
 
     # todo: users can still edit each other lists
