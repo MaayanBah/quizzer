@@ -8,7 +8,6 @@ from rest_framework.permissions import (
 )
 from quiz.permissions import (
     IsAdminOrReadOnly,
-    IsAdminOrQuizCreator,
     IsAdminOrMeOrReadOnly,
 )
 from .models import QuizzerUser, Category, Quizzes, QuizResult, Question, Answer
@@ -67,6 +66,7 @@ class CategoryViewSet(ModelViewSet):
 
 class AnswerViewSet(ModelViewSet):
     serializer_class = AnswerSerializer
+    permission_classes = [IsAdminOrMeOrReadOnly]
 
     def get_queryset(self):
         return Answer.objects.filter(question_id=self.kwargs["question_pk"])
@@ -91,7 +91,7 @@ class UserAnswerViewSet(ModelViewSet):
 
 
 class QuestionViewSet(ModelViewSet):
-    http_method_names = ["get", "post", "patch", "delete"]
+    permission_classes = [IsAdminOrMeOrReadOnly]
 
     def get_queryset(self):
         return Question.objects.filter(quiz_id=self.kwargs["quizzes_pk"])
@@ -100,7 +100,7 @@ class QuestionViewSet(ModelViewSet):
         return {"quiz_id": self.kwargs["quizzes_pk"]}
 
     def get_serializer_class(self):
-        if self.request.method in ["PATCH", "POST"]:
+        if self.request.method in ["PATCH", "POST", "PUT"]:
             return UpdateQuestionSerializer
         return QuestionSerializer
 
@@ -127,7 +127,7 @@ class UserQuestionViewSet(ModelViewSet):
 class QuizzesViewSet(ModelViewSet):
     queryset = Quizzes.objects.all()
     http_method_names = ["get", "post", "patch", "delete"]
-    permission_classes = [IsAdminOrQuizCreator]
+    permission_classes = [IsAdminOrMeOrReadOnly]
 
     def get_serializer_class(self):
         if self.request.method == "POST":
