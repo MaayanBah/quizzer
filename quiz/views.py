@@ -73,8 +73,9 @@ class CategoryViewSet(ModelViewSet):
 
 
 class AnswerViewSet(ModelViewSet):
+    http_method_names = ["get"]
     serializer_class = AnswerSerializer
-    permission_classes = [IsAdminOrMeOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Answer.objects.filter(question_id=self.kwargs["question_pk"])
@@ -99,18 +100,15 @@ class UserAnswerViewSet(ModelViewSet):
 
 
 class QuestionViewSet(ModelViewSet):
-    permission_classes = [IsAdminOrMeOrReadOnly]
+    http_method_names = ["get"]
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Question.objects.filter(quiz_id=self.kwargs["quizzes_pk"])
 
     def get_serializer_context(self):
         return {"quiz_id": self.kwargs["quizzes_pk"]}
-
-    def get_serializer_class(self):
-        if self.request.method in ["PATCH", "POST", "PUT"]:
-            return UpdateQuestionSerializer
-        return QuestionSerializer
 
 
 class UserQuestionViewSet(ModelViewSet):
@@ -135,9 +133,7 @@ class UserQuestionViewSet(ModelViewSet):
 class QuizzesViewSet(ModelViewSet):
     http_method_names = ["get"]
     permission_classes = [IsAuthenticated]
-
-    def get_serializer_class(self):
-        return QuizzesSerializer
+    serializer_class = QuizzesSerializer
 
     def get_queryset(self):
         return Quizzes.objects.filter(quiz_user=self.kwargs["user_pk"])
