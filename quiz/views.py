@@ -133,30 +133,14 @@ class UserQuestionViewSet(ModelViewSet):
 
 
 class QuizzesViewSet(ModelViewSet):
-    queryset = Quizzes.objects.all()
-    http_method_names = ["get", "post", "patch", "delete"]
-    permission_classes = [IsAdminOrMeOrReadOnly]
+    http_method_names = ["get"]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.request.method == "POST":
-            return CreateQuizSerializer
-        elif self.request.method == "PATCH":
-            return UpdateQuizSerializer
         return QuizzesSerializer
 
-    def create(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response(
-                {"error": "User must be authenticated to create a quiz."},
-                status=status.HTTP_405_METHOD_NOT_ALLOWED,
-            )
-        serializer = CreateQuizSerializer(
-            data=request.data, context={"user_id": self.request.user.id}
-        )
-        serializer.is_valid(raise_exception=True)
-        quiz = serializer.save()
-        serializer = QuizzesSerializer(quiz)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return Quizzes.objects.filter(quiz_user=self.kwargs["user_pk"])
 
 
 class UserQuizzesViewSet(ModelViewSet):
