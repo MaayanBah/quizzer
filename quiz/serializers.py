@@ -4,18 +4,44 @@ from .models import QuizzerUser, Category, Quizzes, QuizResult, Question, Answer
 from core.models import User
 
 
+class UpdateQuizzerUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizzerUser
+        fields = ["birth_date"]
+
+    def update(self, instance, validated_data):
+        instance.birth_date = validated_data.get("birth_date", instance.birth_date)
+        instance.save()
+        return instance
+
+    def validate(self, data):
+        # Add validation if needed to ensure user_id is not manually provided
+        if "user_id" in data:
+            raise serializers.ValidationError("user_id should not be provided.")
+        return data
+
+
 class QuizzerUserSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
         model = QuizzerUser
-        fields = ["id", "user_username", "birth_date"]
+        fields = [
+            "id",
+            "user_username",
+            "birth_date",
+            "user_id",
+        ]
 
+    def create(self, validated_data):
+        user_id = self.context["request"].user.id
+        validated_data["user_id"] = user_id
+        return super().create(validated_data)
 
-class UpdateQuizzerUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = QuizzerUser
-        fields = ["birth_date"]
+    def update(self, instance, validated_data):
+        user_id = self.context["request"].user.id
+        validated_data["user_id"] = user_id
+        return super().update(instance, validated_data)
 
 
 class CategorySerializer(serializers.ModelSerializer):

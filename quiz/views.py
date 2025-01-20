@@ -26,22 +26,30 @@ from .serializers import (
 
 class QuizzerUserViewSet(ModelViewSet):
     queryset = QuizzerUser.objects.all()
+    http_method_names = ["get", "patch"]
     permission_classes = [IsAdminOrMeOrReadOnly]
 
-    @action(detail=False, methods=["GET", "PUT"], permission_classes=[IsAuthenticated])
+    @action(
+        detail=False, methods=["GET", "PATCH"], permission_classes=[IsAuthenticated]
+    )
     def me(self, request):
-        quiz_user = QuizzerUser.objects.get(user_id=request.user.id)
+        quiz_user, created = QuizzerUser.objects.get_or_create(user_id=request.user.id)
+
         if request.method == "GET":
             serializer = QuizzerUserSerializer(quiz_user)
             return Response(serializer.data)
-        elif request.method == "PUT":
-            serializer = QuizzerUserSerializer(quiz_user, data=request.data)
+
+        elif request.method == "PATCH":
+            serializer = UpdateQuizzerUserSerializer(
+                quiz_user, data=request.data, partial=True
+            )
             serializer.is_valid(raise_exception=True)
+            serializer.validated_data["user_id"] = request.user.id
             serializer.save()
             return Response(serializer.data)
 
     def get_serializer_class(self):
-        if self.request.method in ["PATCH", "POST", "PUT"]:
+        if self.request.method == "PATCH":
             return UpdateQuizzerUserSerializer
         return QuizzerUserSerializer
 
