@@ -160,7 +160,7 @@ class QuizzesViewSet(ModelViewSet):
 
 class UserQuizzesViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
-    http_method_names = ["get", "post", "patch"]
+    http_method_names = ["get", "post", "patch", "delete"]
 
     def get_queryset(self):
         quizzer_user = QuizzerUser.objects.get(user=self.request.user)
