@@ -15,7 +15,8 @@ class UpdateQuizzerUserSerializer(serializers.ModelSerializer):
         return instance
 
     def validate(self, data):
-        # Add validation if needed to ensure user_id is not manually provided
+        data = super().validate(data)
+
         if "user_id" in data:
             raise serializers.ValidationError("user_id should not be provided.")
         return data
@@ -54,6 +55,12 @@ class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
         fields = ["id", "text", "is_correct"]
+
+
+class UpdateAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ["text", "is_correct"]
 
     def create(self, validated_data):
         question_id = self.context["question_id"]
@@ -95,11 +102,19 @@ class UpdateQuizSerializer(serializers.ModelSerializer):
         model = Quizzes
         fields = ["title", "description", "category"]
 
+    def update(self, instance, validated_data):
+        instance.id = self.context["quiz_id"]
+        instance.title = validated_data.get("title", instance.title)
+        instance.category = validated_data.get("category", instance.category)
+        instance.description = validated_data.get("description", instance.description)
+        instance.save()
+        return instance
+
 
 class CreateQuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quizzes
-        fields = ["id", "title", "description", "category"]
+        fields = ["title", "description", "category"]
 
     def save(self, **kwargs):
         with transaction.atomic():

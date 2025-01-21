@@ -112,7 +112,11 @@ class QuestionViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Question.objects.filter(quiz_id=self.kwargs["quizzes_pk"])
+        return (
+            Question.objects.filter(quiz_id=self.kwargs["quizzes_pk"])
+            .select_related("quiz")
+            .prefetch_related("answers")
+        )
 
     def get_serializer_context(self):
         return {"quiz_id": self.kwargs["quizzes_pk"]}
@@ -129,8 +133,12 @@ class UserQuestionViewSet(ModelViewSet):
 
     def get_queryset(self):
         quizzer_user = QuizzerUser.objects.get(user=self.request.user)
-        return Question.objects.filter(
-            quiz__quiz_user=quizzer_user, quiz_id=self.kwargs["quizzes_pk"]
+        return (
+            Question.objects.filter(
+                quiz__quiz_user=quizzer_user, quiz_id=self.kwargs["quizzes_pk"]
+            )
+            .select_related("quiz")
+            .prefetch_related("answers")
         )
 
     def get_serializer_context(self):
@@ -143,7 +151,11 @@ class QuizzesViewSet(ModelViewSet):
     serializer_class = QuizzesSerializer
 
     def get_queryset(self):
-        return Quizzes.objects.filter(quiz_user=self.kwargs["user_pk"])
+        return (
+            Quizzes.objects.filter(quiz_user=self.kwargs["user_pk"])
+            .prefetch_related("questions")
+            .prefetch_related("questions__answers")
+        )
 
 
 class UserQuizzesViewSet(ModelViewSet):
@@ -152,11 +164,17 @@ class UserQuizzesViewSet(ModelViewSet):
 
     def get_queryset(self):
         quizzer_user = QuizzerUser.objects.get(user=self.request.user)
-        return Quizzes.objects.filter(quiz_user_id=quizzer_user.id)
+        return (
+            Quizzes.objects.filter(quiz_user_id=quizzer_user.id)
+            .prefetch_related("questions")
+            .prefetch_related("questions__answers")
+        )
 
     def get_serializer_context(self):
-        print(self.kwargs)
-        return {"quiz_id": self.kwargs["pk"], "user_id": self.request.user.id}
+        result = {"user_id": self.request.user.id}
+        if "pk" in self.kwargs:
+            result["quiz_id"] = self.kwargs["pk"]
+        return result
 
     def get_serializer_class(self):
         if self.request.method == "POST":

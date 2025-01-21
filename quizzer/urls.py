@@ -18,6 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
+import debug_toolbar
 
 
 urlpatterns = [
@@ -29,4 +30,5 @@ urlpatterns = [
     path("", include("quiz.urls")),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
+    path("__debug__/", include(debug_toolbar.urls)),
 ]

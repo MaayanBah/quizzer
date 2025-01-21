@@ -12,6 +12,8 @@ django-filter = "*"
 djangorestframework = "*"
 dj-database-url = "*"
 gunicorn = "*"
+django-debug-toolbar = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
