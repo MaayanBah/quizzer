@@ -1,34 +1,16 @@
-import { Box, Button, HStack, Image } from "@chakra-ui/react";
-import logo from "../assets/logo.png";
+import { Box, HStack, Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
+import LoginDropMenu from "./loginDropMenu";
 
 const NavBar = () => {
   return (
-    <Box
-      background="#3F8D85"
-      width="100%"
-      padding="10px"
-      boxSizing="border-box"
-    >
-      <HStack padding="10px">
+    <Box background="#3F8D85" width="100%" padding="5px" boxSizing="border-box">
+      <HStack padding="10px" justifyContent="space-between">
         <Link to={"/"}>
           <Image src={logo} width={16} />
         </Link>
-        <Link to={"/"}>
-          <Button variant="outline" size="sm">
-            Home
-          </Button>
-        </Link>
-        <Link to={"/login"}>
-          <Button variant="outline" size="sm">
-            Log In
-          </Button>
-        </Link>
-        <Link to={"/my-quizzes"}>
-          <Button variant="outline" size="sm">
-            My Quizzes
-          </Button>
-        </Link>
+        <LoginDropMenu />
       </HStack>
     </Box>
   );

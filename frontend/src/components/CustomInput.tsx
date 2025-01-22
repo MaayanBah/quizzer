@@ -10,19 +10,35 @@ import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 interface Props {
+  id: string;
+  onChange: (text: string) => void;
+  placeHolder: string;
   isPassword?: boolean;
   formLabel?: string;
-  placeHolder: string;
+  autoComplete?: string;
 }
 
-const CustomInput = ({ formLabel, placeHolder, isPassword = false }: Props) => {
+const CustomInput = ({
+  id,
+  onChange,
+  placeHolder,
+  isPassword = false,
+  formLabel,
+  autoComplete,
+}: Props) => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   return (
     <Box marginBottom={2}>
-      {formLabel && <FormLabel color="teal.500">{formLabel}</FormLabel>}
+      {formLabel && (
+        <FormLabel htmlFor={id} color="teal.500">
+          {formLabel}
+        </FormLabel>
+      )}
       <InputGroup>
         <Input
+          id={id}
+          onChange={(e) => onChange(e.target.value)}
           boxShadow="lg"
           placeholder={placeHolder}
           focusBorderColor="teal.500"
@@ -34,6 +50,7 @@ const CustomInput = ({ formLabel, placeHolder, isPassword = false }: Props) => {
           color="teal.600"
           border="1px"
           type={isPassword && !showPassword ? "password" : "text"}
+          autoComplete={autoComplete}
         />
         {isPassword && (
           <InputRightElement>
