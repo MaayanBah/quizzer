@@ -7,8 +7,19 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import CustomInput from "../components/CustomInput";
+import { useState } from "react";
+import useLogin from "../hooks/useLogin";
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const loginMutation = useLogin();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    loginMutation.mutate({ username, password });
+  };
+
   return (
     <VStack
       marginTop={30}
@@ -24,18 +35,38 @@ const Login = () => {
         borderRadius="md"
       >
         <CardBody>
-          <FormControl
-            isRequired
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <CustomInput placeHolder="Username" />
-            <CustomInput isPassword={true} placeHolder="Password" />
-            <Button marginTop={1} variant="light" boxShadow="lg" width="100%">
-              Login
-            </Button>
-          </FormControl>
+          <form onSubmit={handleSubmit}>
+            <FormControl
+              isRequired
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+            >
+              <CustomInput
+                id="username-input"
+                onChange={(text) => setUsername(text)}
+                placeHolder="Username"
+                autoComplete="Username"
+              />
+              <CustomInput
+                id="password-input"
+                onChange={(text) => setPassword(text)}
+                isPassword={true}
+                placeHolder="Password"
+                autoComplete="current-password"
+              />
+              <Button
+                type="submit"
+                isLoading={loginMutation.isLoading}
+                marginTop={1}
+                variant="light"
+                boxShadow="lg"
+                width="100%"
+              >
+                Login
+              </Button>
+            </FormControl>
+          </form>
         </CardBody>
       </Card>
       <Text marginTop="5px" color="teal.800">

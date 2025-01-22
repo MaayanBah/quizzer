@@ -1,7 +1,11 @@
-import React from "react";
+import { VStack, Text } from "@chakra-ui/react";
 
 const UserQuizzes = () => {
-  return <div>UserQuizzes</div>;
+  return (
+    <VStack>
+      <Text color="teal.600">UserQuizzes</Text>
+    </VStack>
+  );
 };
 
 export default UserQuizzes;
