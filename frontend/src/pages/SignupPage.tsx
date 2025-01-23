@@ -1,10 +1,10 @@
 import {
-  Button,
-  Card,
-  CardBody,
-  FormControl,
-  Text,
-  VStack,
+    Button,
+    Card,
+    CardBody,
+    FormControl,
+    Text,
+    VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
