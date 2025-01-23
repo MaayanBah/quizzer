@@ -6,10 +6,10 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import CustomInput from "../components/CustomInput";
 import { useState } from "react";
-import useLogin from "../hooks/useLogin";
 import { Link } from "react-router-dom";
+import CustomInput from "../components/CustomInput";
+import useLogin from "../hooks/useLogin";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -29,6 +29,7 @@ const Login = () => {
       justifyContent="center"
     >
       <Card bg="teal.500" width="400px" boxShadow="dark-lg" borderRadius="md">
+
         <CardBody>
           <form onSubmit={handleSubmit}>
             <FormControl
@@ -38,6 +39,10 @@ const Login = () => {
               alignItems="center"
             >
               <CustomInput
+                error={
+                  loginMutation.error?.response?.data?.detail ||
+                  loginMutation?.error?.message
+                }
                 id="username-input"
                 onChange={(text) => setUsername(text)}
                 placeHolder="Username"
