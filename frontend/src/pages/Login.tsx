@@ -9,6 +9,7 @@ import {
 import CustomInput from "../components/CustomInput";
 import { useState } from "react";
 import useLogin from "../hooks/useLogin";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -27,13 +28,7 @@ const Login = () => {
       alignItems="center"
       justifyContent="center"
     >
-      <Card
-        bg="teal.500"
-        height={200}
-        width="400px"
-        boxShadow="dark-lg"
-        borderRadius="md"
-      >
+      <Card bg="teal.500" width="400px" boxShadow="dark-lg" borderRadius="md">
         <CardBody>
           <form onSubmit={handleSubmit}>
             <FormControl
@@ -69,9 +64,11 @@ const Login = () => {
           </form>
         </CardBody>
       </Card>
-      <Text marginTop="5px" color="teal.800">
-        Create an account
-      </Text>
+      <Link to="/signup">
+        <Text marginTop="5px" color="teal.800">
+          Create an account
+        </Text>
+      </Link>
     </VStack>
   );
 };
