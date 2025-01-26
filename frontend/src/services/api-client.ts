@@ -1,40 +1,26 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
-export interface AuthResponse {
-  access: string;
-  refresh: string;
-}
+const token = localStorage.getItem("access_token");
 
-export const axiosInstance = axios.create({
+export const authAxiosInstance = axios.create({
   baseURL: "https://quizzerapp-2c174419668c.herokuapp.com",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: token ? token : "",
+  },
 });
 
-class AuthAPIClient {
+class ApiClient<T> {
   endpoint: string;
 
   constructor(endpoint: string) {
     this.endpoint = endpoint;
   }
 
-  login = (credentials: { username: string; password: string }) => {
-    return axiosInstance
-      .post<AuthResponse>(`${this.endpoint}/jwt/create/`, credentials)
+  getAll = (requestConfig?: AxiosRequestConfig) =>
+    authAxiosInstance
+      .get<T[]>(this.endpoint, requestConfig)
       .then((res) => res.data);
-  };
-
-  register = (userData: {
-    username: string;
-    password: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-  }) => {
-    return axiosInstance
-      .post(`${this.endpoint}/users/`, userData)
-      .then((res) => res.data);
-  };
 }
 
-const apiClient = new AuthAPIClient("/auth");
-
-export default apiClient;
+export default ApiClient;

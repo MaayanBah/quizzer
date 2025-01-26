@@ -6,7 +6,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Tooltip
+  Tooltip,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -14,7 +14,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 interface Props {
   id: string;
   error?: string | undefined;
-  onChange: (text: string) => void;
+  onChange?: (text: string) => void;
   placeHolder: string;
   isPassword?: boolean;
   formLabel?: string;

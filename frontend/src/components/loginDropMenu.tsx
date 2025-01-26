@@ -48,6 +48,9 @@ const LoginDropMenu = () => {
           <Link to={"/my-quizzes"}>
             <MenuItem>My Quizzes</MenuItem>
           </Link>
+          <Link to={"/create-quiz"}>
+            <MenuItem>Create Quiz</MenuItem>
+          </Link>
         </MenuList>
       )}
     </Menu>

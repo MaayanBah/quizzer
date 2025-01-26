@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../services/api-client";
+import apiClient from "../services/auth-api-client";
 import useTokenStore from "../state-management/token/store";
 
 interface LoginCredentials {
