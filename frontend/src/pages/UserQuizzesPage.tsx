@@ -1,6 +1,6 @@
 import { VStack, Text } from "@chakra-ui/react";
 
-const UserQuizzes = () => {
+const UserQuizzesPage = () => {
   return (
     <VStack>
       <Text color="teal.600">UserQuizzes</Text>
@@ -8,4 +8,4 @@ const UserQuizzes = () => {
   );
 };
 
-export default UserQuizzes;
+export default UserQuizzesPage;

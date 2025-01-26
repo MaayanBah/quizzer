@@ -9,12 +9,14 @@ const theme = extendTheme({
   components: {
     Button: {
       baseStyle: {
-        borderRadius: "md", // Default border radius
-        fontWeight: "bold", // Default font weight
+        borderRadius: "md",
+        fontWeight: "bold",
       },
       variants: {
         light: {
           bg: "#FFF0B5",
+          borderColor: "teal.500",
+          borderWidth: "1px",
           color: "teal.600",
           _hover: {
             bg: "#F0E09E",
@@ -23,15 +25,16 @@ const theme = extendTheme({
         },
         dark: {
           bg: "teal.800",
-          color: "white",
+          color: "#FFF5C9",
           _hover: {
             bg: "teal.700",
-            color: "white",
+            color: "#FFF5C9",
           },
         },
       },
     },
   },
+
   styles: {
     global: {
       body: {

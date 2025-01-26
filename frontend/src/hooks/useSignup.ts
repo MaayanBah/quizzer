@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import apiClient from "../services/api-client";
 import { AxiosError } from "axios";
+import apiClient from "../services/auth-api-client";
 
 interface SignupErrorResponse {
   first_name?: string[];
