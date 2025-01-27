@@ -13,9 +13,9 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 interface Props {
   id: string;
+  placeHolder: string;
   error?: string | undefined;
   onChange?: (text: string) => void;
-  placeHolder: string;
   isPassword?: boolean;
   formLabel?: string;
   autoComplete?: string;
@@ -23,9 +23,9 @@ interface Props {
 
 const CustomInput = ({
   id,
+  placeHolder,
   error,
   onChange,
-  placeHolder,
   isPassword = false,
   formLabel,
   autoComplete,
@@ -52,7 +52,7 @@ const CustomInput = ({
             <Input
               id={id}
               required={true}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={(e) => onChange && onChange(e.target.value)}
               boxShadow="lg"
               placeholder={placeHolder}
               focusBorderColor="teal.500"
