@@ -182,3 +182,10 @@ class UserQuizzesViewSet(ModelViewSet):
         elif self.request.method == "PATCH":
             return UpdateQuizSerializer
         return QuizzesSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        quiz = serializer.save()
+        response_serializer = CreateQuizSerializer(quiz)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
