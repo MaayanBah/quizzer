@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
+from uuid import uuid4
 
 
 class QuizzerUser(models.Model):
@@ -30,6 +31,7 @@ class Category(models.Model):
 
 
 class Quizzes(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     category = models.ForeignKey(
@@ -59,6 +61,7 @@ class QuizResult(models.Model):
 
 
 class Question(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4)
     title = models.CharField(max_length=255)
     text = models.TextField()
     quiz = models.ForeignKey(
@@ -73,6 +76,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4)
     question = models.ForeignKey(
         Question, related_name="answers", on_delete=models.CASCADE
     )

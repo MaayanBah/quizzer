@@ -112,9 +112,11 @@ class UpdateQuizSerializer(serializers.ModelSerializer):
 
 
 class CreateQuizSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+
     class Meta:
         model = Quizzes
-        fields = ["title", "description", "category"]
+        fields = ["title", "description", "category", "id"]
 
     def save(self, **kwargs):
         with transaction.atomic():
