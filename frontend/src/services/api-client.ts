@@ -6,7 +6,7 @@ export const authAxiosInstance = axios.create({
   baseURL: "https://quizzerapp-2c174419668c.herokuapp.com",
   headers: {
     "Content-Type": "application/json",
-    Authorization: token ? token : "",
+    Authorization: token ? `JWT ${token}` : "",
   },
 });
 
@@ -20,6 +20,11 @@ class ApiClient<T> {
   getAll = (requestConfig?: AxiosRequestConfig) =>
     authAxiosInstance
       .get<T[]>(this.endpoint, requestConfig)
+      .then((res) => res.data);
+
+  post = (data: Partial<T>, requestConfig?: AxiosRequestConfig) =>
+    authAxiosInstance
+      .post<T>(this.endpoint, data, requestConfig)
       .then((res) => res.data);
 }
 

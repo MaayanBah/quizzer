@@ -4,6 +4,7 @@ import HomePage from "./pages/Homepage";
 import Layout from "./pages/Layout";
 import Login from "./pages/Login";
 import SignupPage from "./pages/SignupPage";
+import UserQuizPage from "./pages/UserQuizPage";
 import UserQuizzesPage from "./pages/UserQuizzesPage";
 
 const router = createBrowserRouter([
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "signup", element: <SignupPage /> },
       { path: "my-quizzes", element: <UserQuizzesPage /> },
+      { path: "my-quizzes/:id", element: <UserQuizPage /> },
       { path: "create-quiz", element: <CreateQuizPage /> },
     ],
   },
