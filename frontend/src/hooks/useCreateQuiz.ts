@@ -1,15 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import ApiClient from "../services/api-client";
+import Quiz from "../entities/Quiz";
 
 interface QuizPayload {
-  title: string;
-  description: string;
-  category: number;
-}
-
-interface Quiz {
-  id: string;
   title: string;
   description: string;
   category: number;

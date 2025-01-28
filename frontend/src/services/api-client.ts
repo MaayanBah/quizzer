@@ -22,6 +22,18 @@ class ApiClient<T> {
       .get<T[]>(this.endpoint, requestConfig)
       .then((res) => res.data);
 
+  get = (identifier: string) => {
+    return authAxiosInstance
+      .get<T>(this.endpoint + "/" + identifier)
+      .then((res) => res.data);
+  };
+
+  patch(identifier: string, data: Partial<T>) {
+    return authAxiosInstance
+      .patch<T>(this.endpoint + "/" + identifier, data)
+      .then((res) => res.data);
+  }
+
   post = (data: Partial<T>, requestConfig?: AxiosRequestConfig) =>
     authAxiosInstance
       .post<T>(this.endpoint, data, requestConfig)

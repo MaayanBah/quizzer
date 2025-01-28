@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import useCategories from "../hooks/useCtegories";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   selectedCategory: number | null;
@@ -23,6 +24,13 @@ const CategoriesMenu = ({
   visibleTooltip = false,
 }: Props) => {
   const { data: categories, isLoading, error } = useCategories();
+  const navigate = useNavigate();
+
+  if (error?.response?.status === 401) {
+    alert("Unauthorized! Redirecting to login.");
+    localStorage.removeItem("access_token");
+    navigate("/login");
+  }
 
   return (
     <>
