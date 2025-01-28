@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.db import models
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from rest_framework.decorators import action
@@ -170,13 +170,22 @@ class UserQuestionViewSet(ModelViewSet):
                 {"error": "A quiz cannot have more than 60 questions."},
                 status=status.HTTP_403_FORBIDDEN,
             )
+        position = quiz.questions.count() + 1
 
         serializer = self.get_serializer(
             data=request.data, context=self.get_serializer_context()
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(position=position)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        question = self.get_object()
+        Question.objects.filter(
+            quiz=question.quiz, position__gt=question.position
+        ).update(position=models.F("position") - 1)
+        question.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class QuizzesViewSet(ModelViewSet):

@@ -67,17 +67,18 @@ class Question(models.Model):
     quiz = models.ForeignKey(
         Quizzes, related_name="questions", on_delete=models.CASCADE
     )
+    position = models.IntegerField()
 
     def __str__(self) -> str:
         return self.title
 
     def save(self, *args, **kwargs):
         if self.quiz.questions.count() >= 60:
-            raise ValueError("A quiz can have at most 60 question.")
+            raise ValueError("A quiz can have 60 questions at most.")
         super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ["title"]
+        ordering = ["position"]
 
 
 class Answer(models.Model):
@@ -93,5 +94,5 @@ class Answer(models.Model):
 
     def save(self, *args, **kwargs):
         if self.question.answers.count() >= 4:
-            raise ValueError("A question can have at most 4 answers.")
+            raise ValueError("A question can have 4 answers at most.")
         super().save(*args, **kwargs)
