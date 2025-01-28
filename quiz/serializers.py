@@ -72,7 +72,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ["id", "title", "text", "answers"]
+        fields = ["id", "title", "text", "answers", "position"]
 
     def create(self, validated_data):
         quiz_id = self.context["quiz_id"]
