@@ -105,6 +105,21 @@ class UserAnswerViewSet(ModelViewSet):
             return UpdateAnswerSerializer
         return AnswerSerializer
 
+    def create(self, request, *args, **kwargs):
+        question_id = self.kwargs["question_pk"]
+
+        answer_count = Answer.objects.filter(question_id=question_id).count()
+        if answer_count >= 4:
+            return Response(
+                {"error": "Each question can only have up to 4 answers."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(question_id=question_id)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class QuestionViewSet(ModelViewSet):
     http_method_names = ["get"]
@@ -143,6 +158,25 @@ class UserQuestionViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {"quiz_id": self.kwargs["quizzes_pk"]}
+
+    def create(self, request, *args, **kwargs):
+        quiz = Quizzes.objects.filter(id=self.kwargs["quizzes_pk"]).first()
+        if not quiz:
+            return Response(
+                {"error": "Quiz not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+        if quiz.questions.count() >= 60:
+            return Response(
+                {"error": "A quiz cannot have more than 60 questions."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        serializer = self.get_serializer(
+            data=request.data, context=self.get_serializer_context()
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class QuizzesViewSet(ModelViewSet):
