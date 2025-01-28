@@ -1,11 +1,11 @@
-import { Box, Button, Text, Tooltip, VStack } from "@chakra-ui/react";
+import { Button, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
+import Confetti from "react-confetti";
 import { useNavigate } from "react-router-dom";
+import { useWindowSize } from "react-use";
 import CategoriesMenu from "../components/CategoriesMenu";
 import CustomInput from "../components/CustomInput";
 import useCreateQuiz from "../hooks/useCreateQuiz";
-import Confetti from "react-confetti";
-import { useWindowSize } from "react-use";
 
 const CreateQuizPage = () => {
   const { width, height } = useWindowSize();

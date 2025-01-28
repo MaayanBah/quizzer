@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import ms from "ms";
 import ApiClient from "../services/api-client";
+import { AxiosError } from "axios";
 
 interface Category {
   id: number;
@@ -12,7 +13,7 @@ interface Category {
 const apiClient = new ApiClient<Category>("/categories");
 
 const useCategories = () =>
-  useQuery<Category[], Error>({
+  useQuery<Category[], AxiosError>({
     queryKey: ["categories"],
     queryFn: () => apiClient.getAll(),
     staleTime: ms("24h"),
