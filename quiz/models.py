@@ -62,7 +62,6 @@ class QuizResult(models.Model):
 
 class Question(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4)
-    title = models.CharField(max_length=255)
     text = models.TextField()
     quiz = models.ForeignKey(
         Quizzes, related_name="questions", on_delete=models.CASCADE
@@ -70,7 +69,7 @@ class Question(models.Model):
     position = models.IntegerField()
 
     def __str__(self) -> str:
-        return self.title
+        return self.text
 
     def save(self, *args, **kwargs):
         if self.quiz.questions.count() >= 60:
