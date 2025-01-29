@@ -1,7 +1,10 @@
-import { Box, Spinner, VStack } from "@chakra-ui/react";
+import { Box, Button, Image, Spinner, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import addImage from "../assets/add.svg";
 import EditableText from "../components/EditableText";
+import QuestionsGrid from "../components/QuestionsGrid";
+import useAddQuestion from "../hooks/useAddQuestion";
 import useEditQuiz from "../hooks/useEditQuiz";
 import useQuiz from "../hooks/useQuiz";
 
@@ -11,6 +14,7 @@ const UserQuizPage = () => {
 
   const { data: quiz, isLoading, error } = useQuiz(id!);
   const { mutate: editQuiz } = useEditQuiz();
+  const { mutate: addQuestion } = useAddQuestion(id!);
 
   const [title, setTitle] = useState<string>(quiz?.title || "");
   const [description, setDescription] = useState<string>(
@@ -48,6 +52,26 @@ const UserQuizPage = () => {
       }
     );
   };
+
+  const handleAddQuestion = () => {
+    addQuestion(
+      {
+        title: "New Question",
+        text: "Write your question here!",
+      },
+      {
+        onError: () => {
+          if (error?.response?.status == 401) {
+            alert("Unauthorized! Redirecting to login.");
+            localStorage.removeItem("access_token");
+            navigate("/login");
+          }
+          alert("Failed to update quiz.");
+        },
+      }
+    );
+  };
+
   if (!quiz) {
     return null;
   }
@@ -74,6 +98,10 @@ const UserQuizPage = () => {
           inputWidth={600}
         />
       </Box>
+      {id && <QuestionsGrid quizId={id} />}
+      <Button marginTop="15px" onClick={handleAddQuestion}>
+        <Image src={addImage} width="70px" />
+      </Button>
     </VStack>
   );
 };
