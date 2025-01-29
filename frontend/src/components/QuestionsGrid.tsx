@@ -29,9 +29,11 @@ const QuestionsGrid = ({ quizId }: Props) => {
         {isLoading && skeletons.map(() => <CardSkeleton height="200px" />)}
         {questions &&
           questions.map((question: Question) => (
-            <QuestionCard title={question.title} text={question.text} />
+            <QuestionCard
+              questionId={question.id}
+              text={question.text}
+            />
           ))}
-        ;
       </SimpleGrid>
     </>
   );

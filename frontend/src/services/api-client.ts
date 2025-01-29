@@ -38,6 +38,9 @@ class ApiClient<T> {
     authAxiosInstance
       .post<T>(this.endpoint, data, requestConfig)
       .then((res) => res.data);
+
+  delete = (identifier: string) =>
+    authAxiosInstance.delete(`${this.endpoint}/${identifier}`);
 }
 
 export default ApiClient;

@@ -7,6 +7,7 @@ import QuestionsGrid from "../components/QuestionsGrid";
 import useAddQuestion from "../hooks/useAddQuestion";
 import useEditQuiz from "../hooks/useEditQuiz";
 import useQuiz from "../hooks/useQuiz";
+import { useQueryClient } from "@tanstack/react-query";
 
 const UserQuizPage = () => {
   const { id } = useParams();
@@ -20,6 +21,7 @@ const UserQuizPage = () => {
   const [description, setDescription] = useState<string>(
     quiz?.description || ""
   );
+  const queryClient = useQueryClient();
 
   if (error?.response?.status == 401) {
     alert("Unauthorized! Redirecting to login.");
@@ -56,10 +58,13 @@ const UserQuizPage = () => {
   const handleAddQuestion = () => {
     addQuestion(
       {
-        title: "New Question",
         text: "Write your question here!",
       },
+
       {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["questions", id!]);
+        },
         onError: () => {
           if (error?.response?.status == 401) {
             alert("Unauthorized! Redirecting to login.");
@@ -93,14 +98,23 @@ const UserQuizPage = () => {
           onChange={(e) => setDescription(e.target.value)}
           handleEdit={handleEdit}
           fontSize={20}
+          inputFontSize={15}
           isExpandable={true}
           expandableTextLength={50}
           inputWidth={600}
         />
       </Box>
       {id && <QuestionsGrid quizId={id} />}
-      <Button marginTop="15px" onClick={handleAddQuestion}>
-        <Image src={addImage} width="70px" />
+      <Button
+        onClick={handleAddQuestion}
+        padding="0px"
+        borderRadius="full"
+        _hover={{ bg: "#FCF0C1" }}
+        _active={{ bg: "#F0E09E" }}
+        width="auto"
+        height="auto"
+      >
+        <Image padding={0} margin={0} src={addImage} width="70px" />
       </Button>
     </VStack>
   );

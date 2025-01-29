@@ -9,6 +9,7 @@ interface Props {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleEdit: () => void;
   fontSize: number | string;
+  inputFontSize?: number | string;
   isExpandable?: boolean;
   expandableTextLength?: number;
   inputWidth?: number;
@@ -19,6 +20,7 @@ const EditableText = ({
   onChange,
   handleEdit,
   fontSize,
+  inputFontSize = fontSize,
   isExpandable = false,
   expandableTextLength = 100,
   inputWidth = 300,
@@ -49,7 +51,7 @@ const EditableText = ({
             placeholder="Edit Text"
             fontFamily="mono"
             color="teal.600"
-            fontSize={fontSize}
+            fontSize={inputFontSize}
             border="1px"
             _hover={{ color: "teal.500" }}
             width={inputWidth}
