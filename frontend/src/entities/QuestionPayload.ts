@@ -1,5 +1,4 @@
 interface Question {
-  id: string;
   text: string;
 }
 
