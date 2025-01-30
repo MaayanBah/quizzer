@@ -1,5 +1,5 @@
-interface Question {
+interface QuestionPayload {
   text: string;
 }
 
-export default Question;
+export default QuestionPayload;

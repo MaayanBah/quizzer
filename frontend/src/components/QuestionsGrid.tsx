@@ -25,6 +25,7 @@ const QuestionsGrid = ({ quizId }: Props) => {
         padding={10}
         columns={{ sm: 1, md: 1, lg: 2, xl: 2, "2xl": 3 }}
         spacing={6}
+        alignItems="stretch"
       >
         {isLoading && skeletons.map(() => <CardSkeleton height="200px" />)}
         {questions &&

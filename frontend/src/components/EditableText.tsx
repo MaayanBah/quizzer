@@ -34,7 +34,12 @@ const EditableText = ({
           {isExpandable ? (
             <ExpandableText children={text} length={expandableTextLength} />
           ) : (
-            <Text fontFamily="mono" color="teal.600" fontSize={fontSize}>
+            <Text
+              maxWidth={inputWidth}
+              fontFamily="mono"
+              color="teal.600"
+              fontSize={fontSize}
+            >
               {text}
             </Text>
           )}
