@@ -30,6 +30,7 @@ const QuestionsGrid = ({ quizId }: Props) => {
         {questions &&
           questions.map((question: Question) => (
             <QuestionCard
+              key={question.id}
               questionId={question.id}
               text={question.text}
             />
