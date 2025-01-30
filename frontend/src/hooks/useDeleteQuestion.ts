@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import ApiClient from "../services/api-client";
 import { AxiosError, AxiosResponse } from "axios";
+import ApiClient from "../services/api-client";
 
 const useDeleteQuestion = (quizId: string) => {
   const queryClient = useQueryClient();
@@ -8,6 +8,7 @@ const useDeleteQuestion = (quizId: string) => {
 
   return useMutation<AxiosResponse, AxiosError, string>(
     (questionId) => apiClient.delete(questionId),
+
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["questions", quizId]);
