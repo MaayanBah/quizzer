@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import Question from "../entities/Question";
 import ApiClient from "../services/api-client";
-import { AxiosError } from "axios";
-import QuestionPayload from "../entities/QuestionPayload";
 
 const useEditQuestion = (quizId: string) => {
   const apiClient = new ApiClient(`/quizzes/${quizId}/questions`);
