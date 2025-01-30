@@ -86,7 +86,6 @@ class AnswerViewSet(ModelViewSet):
 
 
 class UserAnswerViewSet(ModelViewSet):
-    serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticated]
     http_method_names = ["get", "post", "patch", "delete"]
 
@@ -117,7 +116,7 @@ class UserAnswerViewSet(ModelViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(question_id=question_id)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
