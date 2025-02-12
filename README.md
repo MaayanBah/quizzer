@@ -1,6 +1,7 @@
 # Quizzer 🪩
 
-### <font color="red">This project is still in development</font> 🔨
+> [!NOTE]
+> The frontend of this project is still under development 🔨
 
 ## Table of Contents 📖
 
